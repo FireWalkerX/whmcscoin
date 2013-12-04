@@ -1,9 +1,8 @@
-whmcscoin
-=========
+# whmcscoin
+
 WHMCS gateway for various altcoins
 
-Donation Addresses
-=========
+### Donation Addresses
 Bitcoin: 1GDofTWysZvq3HB1yputqFSZcZP8HzFLKF
 Litecoin: LR3ipCUqfPFkLiw27wr94Td5r6ZWygD8R9
 Feathercoin: 6gzcbWjgdJvgRm3kDgWjuQsyFhszR51MNW

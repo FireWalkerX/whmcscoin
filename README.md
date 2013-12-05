@@ -9,8 +9,8 @@ This is a work in progress. If you find any issues or problems, please submit th
 You'll need to set up the respective daemons on a server somewhere for this to work properly. 
 This gateway accepts the coins into your own wallet, so you'll never have to worry about someone else holding them.  
 
-I've used elements from [https://bitbucket.org/Doctor_McKay/blockchain.info-whmcs-payment-gateway/](this Blockchain.info WHMCS gateway) by [https://bitbucket.org/Doctor_McKay](Doctor_McKay) 
-as well as [https://github.com/dasher/WHMCS-Litecoin-Payment-Module](this Litecoin WHMCS gateway) by [https://github.com/dasher](dasher).  
+I've used elements from [this Blockchain.info WHMCS gateway](https://bitbucket.org/Doctor_McKay/blockchain.info-whmcs-payment-gateway/) by [Doctor_McKay](https://bitbucket.org/Doctor_McKay) 
+as well as [this Litecoin WHMCS gateway](https://github.com/dasher/WHMCS-Litecoin-Payment-Module) by [dasher](https://github.com/dasher).  
 
 ###To use:
 
@@ -25,6 +25,7 @@ the gateway settings after activating each gateway. Easy peasy.
 - Add support for overpayment crediting
 - Better error handling
 - SSL support
+- Payments per transaction instead of per address
 
 ### Donation Addresses
 Bitcoin: 1GDofTWysZvq3HB1yputqFSZcZP8HzFLKF  

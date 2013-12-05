@@ -1,4 +1,5 @@
-# whmcscoin
+whmcscoin
+======
 
 WHMCS gateway for various altcoins.  
 
@@ -19,11 +20,11 @@ so be sure to set your daemon to allow RPC from your WHMCS server. You'll need t
 the gateway settings after activating each gateway. Easy peasy.  
 
 ###To do:
-- [ ]Find some way to avoid the cronjob requirement? Not sure if easily possible without changing daemon.
-- [ ]Add refund option
-- [ ]Add support for overpayment crediting
-- [ ]Better error handling
-- [ ]SSL support
+- Find some way to avoid the cronjob requirement? Not sure if easily possible without changing daemon.
+- Add refund option
+- Add support for overpayment crediting
+- Better error handling
+- SSL support
 
 ### Donation Addresses
 Bitcoin: 1GDofTWysZvq3HB1yputqFSZcZP8HzFLKF  

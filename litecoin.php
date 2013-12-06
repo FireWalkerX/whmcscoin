@@ -135,7 +135,7 @@ function litecoin_get_frame() {
 	}
         
         # need to display how much is left to be paid
-	return "Please send <b><a href='litecoin:{$q['address']}?amount={$q['amount']}&label=" . urlencode($gateway['companyname'] . ' Invoice #' . $q['invoice_id']) . "'>{$q['amount']} LTC</a></b> to address:<br /><br /><b>{$q['address']}</b>";
+	return 'Please send <strong>'.$params['amount'].'</strong>worth of LTC to address:<br /><strong><a href="#">'.$q['address'].'</a></strong><br />Currently, '.$params['amount'].' is <strong>'.$amount.'</strong> LTC';
 }
 
 if($_GET['checkinvoice']) {

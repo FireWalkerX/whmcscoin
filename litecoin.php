@@ -36,10 +36,10 @@ function litecoin_config() {
 }
 
 function litecoin_link($params) {
-	full_query("CREATE TABLE IF NOT EXISTS `litecoin_payments` (`invoice_id` int(11) NOT NULL, `amount` float(11,8) NOT NULL, `address` varchar(64) NOT NULL, `confirmations` int(11) NOT NULL, PRIMARY KEY (`invoice_id`))");
-        full_query("CREATE TABLE IF NOT EXISTS `litecoin_info` (`invoice_id` int(11) NOT NULL, `secret` varchar(64) NOT NULL, `address` varchar(64) NOT NULL, PRIMARY KEY (`invoice_id`))");
+	full_query("CREATE TABLE IF NOT EXISTS `mod_gw_litecoin_payments` (`invoice_id` int(11) NOT NULL, `amount` float(11,8) NOT NULL, `address` varchar(64) NOT NULL, `confirmations` int(11) NOT NULL, PRIMARY KEY (`invoice_id`))");
+        full_query("CREATE TABLE IF NOT EXISTS `mod_gw_litecoin_info` (`invoice_id` int(11) NOT NULL, `secret` varchar(64) NOT NULL, `address` varchar(64) NOT NULL, PRIMARY KEY (`invoice_id`))");
 	
-	$q = mysql_fetch_array(mysql_query("SELECT * FROM `litecoin_info` WHERE invoice_id = '{$params['invoiceid']}'"));
+	$q = mysql_fetch_array(mysql_query("SELECT * FROM `mod_gw_litecoin_info` WHERE invoice_id = '{$params['invoiceid']}'"));
 	if($q['address']) {
             $amount = $q['amount'];
             $address = $q['address'];
@@ -73,7 +73,7 @@ function litecoin_link($params) {
 	}
 	$code = 'Please send <strong>'.$params['amount'].'</strong>worth of LTC to address:<br /><strong><a href="#">'.$address.'</a></strong><br />Currently, '.$params['amount'].' is <strong>'.$amount.'</strong> LTC';
 	
-        mysql_query("INSERT INTO `litecoin_info` SET invoice_id = '{$params['invoiceid']}', address = '" . mysql_real_escape_string($address) . "', secret = '{$secret}'");
+        mysql_query("INSERT INTO `mod_gw_litecoin_info` SET invoice_id = '{$params['invoiceid']}', address = '" . mysql_real_escape_string($address) . "', secret = '{$secret}'");
 	return "<iframe src='{$params['systemurl']}/modules/gateways/litecoin.php?invoice={$params['invoiceid']}' style='border:none; height:120px'>Your browser does not support frames.</iframe>";
 	return $code;
 
@@ -129,7 +129,7 @@ if($_GET['invoice']) {
 function litecoin_get_frame() {
 	global $gateway;
 
-	$q = mysql_fetch_array(mysql_query("SELECT * FROM `litecoin_info` WHERE invoice_id = '" . mysql_real_escape_string($_GET['invoice']) . "'"));
+	$q = mysql_fetch_array(mysql_query("SELECT * FROM `mod_gw_litecoin_info` WHERE invoice_id = '" . mysql_real_escape_string($_GET['invoice']) . "'"));
 	if(!$q['address']) {
 		return "We're sorry, but you cannot use Litecoin to pay for this transaction at this time.";
 	}

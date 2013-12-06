@@ -28,12 +28,13 @@ the gateway settings after activating each gateway. Easy peasy.
 
 ###To do:
 - Find some way to avoid the cronjob requirement? Not sure if easily possible without changing daemon.
-- Add refund option
-- Add support for overpayment crediting
+- Add refund option (maybe -- might not be wise with coins)
+- ~~Add support for overpayment crediting~~
 - Better error handling
 - SSL support
 - Payments per transaction instead of per address
 - Ditch deprecated MySQL function calls and use WHMCS MySQL helper functions
+- Add support for admin defined currency in WHMCS
 
 ### Donation Addresses
 Bitcoin: 1GDofTWysZvq3HB1yputqFSZcZP8HzFLKF  

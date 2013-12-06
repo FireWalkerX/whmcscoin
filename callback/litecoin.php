@@ -58,6 +58,9 @@ while($result = mysql_fetch_array($results)){
                 continue; # Something happened. We'll try again later.
             }
             $amount_received = round($recArr['amount'] * $ltc_ticker['ticker']['sell'], 2);
+            if (!$amount_received) { #Either some bug or it's worth $0 which will mark the invoice as fully paid
+                continue;
+            }
             
             # Let's log the litecoin payment.
             insert_query('litecoin_payments', array("invoice_id"=>$result['id'],"amount"=>$recArr['amount'],"address"=>$recArr['address'],"confirmations"=>$recArr['confirmations']));

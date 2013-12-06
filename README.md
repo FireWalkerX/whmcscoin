@@ -12,6 +12,13 @@ This gateway accepts the coins into your own wallet, so you'll never have to wor
 I've used elements from [this Blockchain.info WHMCS gateway](https://bitbucket.org/Doctor_McKay/blockchain.info-whmcs-payment-gateway/) by [Doctor_McKay](https://bitbucket.org/Doctor_McKay) 
 as well as [this Litecoin WHMCS gateway](https://github.com/dasher/WHMCS-Litecoin-Payment-Module) by [dasher](https://github.com/dasher).  
 
+###Warning:
+These files are provided as-is. I don't have different branches for stable and under-development versions. 
+This means that there may be problems with it when you download it. If you find an issue, again, please submit it. 
+When I'm happier with the progress, I'll separate it into two branches but right now, please be careful. The best 
+practice, of course, would be to review the code yourself and do your own testing after installing this gateway 
+into your WHMCS.
+
 ###To use:
 
 You need to set up a cron job to access callback/litecoin.php which will check the addresses for payments. 
@@ -26,6 +33,7 @@ the gateway settings after activating each gateway. Easy peasy.
 - Better error handling
 - SSL support
 - Payments per transaction instead of per address
+- Ditch deprecated MySQL function calls and use WHMCS MySQL helper functions
 
 ### Donation Addresses
 Bitcoin: 1GDofTWysZvq3HB1yputqFSZcZP8HzFLKF  

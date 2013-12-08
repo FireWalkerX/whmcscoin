@@ -59,7 +59,7 @@ function litecoin_link($params) {
 	$amount = round($params['amount'] / $ltc_ticker['ticker']['sell'], 8);
 	
 	# Build Litecoin Information Here
-	require_once 'jsonRPC/jsonRPCClient.php';
+	require_once 'whmcscoin/jsonRPCClient.php';
 	$litecoin = new jsonRPCClient("http://{$params['username']}:{$params['password']}@{$params['host']}:{$params['port']}"); 
 	
 	if(!$litecoin->getinfo()){ //This won't work. Gotta make this work.
@@ -83,6 +83,7 @@ if($_GET['invoice']) {
 	require('./../../dbconnect.php');
 	include("./../../includes/gatewayfunctions.php");
 	$gateway = getGatewayVariables('litecoin');
+        print_r($params);
 	?>
 <!doctype html>
 <html>
@@ -126,16 +127,30 @@ if($_GET['invoice']) {
 <?php
 }
 
-function litecoin_get_frame() {
+function litecoin_get_frame($params, $amount) {
 	global $gateway;
 
+        $invoiceInfo = mysql_fetch_array(select_query('tblinvoices', 'total', array('id'=>$_GET['invoice'],)));
+        $amountToPay = $invoiceInfo['total'];
+        while ($row = mysql_fetch_array(select_query('tblaccounts', array('amountin',), array('invoice_id'=>$_GET['invoice'],)))) {
+            $amountToPay -= $row['amountin'];
+        }
+        
+        # Convert to SQL Helper
 	$q = mysql_fetch_array(mysql_query("SELECT * FROM `mod_gw_litecoin_info` WHERE invoice_id = '" . mysql_real_escape_string($_GET['invoice']) . "'"));
 	if(!$q['address']) {
 		return "We're sorry, but you cannot use Litecoin to pay for this transaction at this time.";
 	}
         
+        # We should make this a function
+        $ltc_ticker = json_decode(file_get_contents("https://btc-e.com/api/2/ltc_usd/ticker"), true);
+        if (!$ltc_ticker) {
+            return "We're sorry, but you cannot use Litecoin to pay for this transaction at this time.";
+        }
+	$amount = round($amountToPay / $ltc_ticker['ticker']['sell'], 8);
+        
         # need to display how much is left to be paid
-	return 'Please send <strong>'.$params['amount'].'</strong>worth of LTC to address:<br /><strong><a href="#">'.$q['address'].'</a></strong><br />Currently, '.$params['amount'].' is <strong>'.$amount.'</strong> LTC';
+	return 'Please send <strong>&#36;'.$amountToPay.'</strong> worth of LTC to address:<br /><strong><a href="#">'.$q['address'].'</a></strong><br />Currently, &#36;'.$amountToPay.' is <strong>'.$amount.'</strong> LTC';
 }
 
 if($_GET['checkinvoice']) {

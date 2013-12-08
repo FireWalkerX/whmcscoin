@@ -19,16 +19,14 @@ if($_GET['test']) {
 
 $rpc = "http://{$gateway['username']}:{$gateway['password']}@{$gateway['host']}:{$gateway['port']}";
 # Build Litecoin Information Here
-require_once '../jsonRPC/jsonRPCClient.php';
+require_once '../whmcscoin/jsonRPCClient.php';
 $litecoin = new jsonRPCClient($rpc); 
 
 if(!$litecoin->getinfo()){
 	die('could not connect to litecoind');
 }
 
-$sql = 'SELECT * FROM `tblinvoices` WHERE paymentmethod="'.$gatewaymodule.'" AND status = "Unpaid"';
-$results = mysql_query($sql);
-while($result = mysql_fetch_array($results)){
+while($result = mysql_fetch_array(select_query('tblinvoices', 'id,amount', array('paymentmethod'=>$gatewaymodule,'status'=>'Unpaid'), 'id', 'DESC'))){
         $ltc_info = mysql_fetch_array(select_query("mod_gw_litecoin_info", "secret", array("invoice_id"=>$result['id']), "invoice_id", "DESC", 1));
 	$amount = $result['amount'];
 	$received = $litecoin->listtransactions($ltc_info['secret'], 1000); # I feel like we can do better than just get the LAST ONE THOUSAND TRANSACTIONS but we'll figure that out later

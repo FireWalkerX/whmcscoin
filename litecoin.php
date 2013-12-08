@@ -71,7 +71,7 @@ function litecoin_link($params) {
 	if (!$address) { //This probably won't work either.{
             return "We're sorry, but you cannot use Litecoin to pay for this transaction at this time.";
 	}
-	$code = 'Please send <strong>'.$params['amount'].'</strong>worth of LTC to address:<br /><strong><a href="#">'.$address.'</a></strong><br />Currently, '.$params['amount'].' is <strong>'.$amount.'</strong> LTC';
+	$code = 'Please send <strong>'.$params['amount'].'</strong>worth of LTC to address:<br /><strong><a href="#">'.$address.'</a></strong><br /><span id="ltcprice">Currently, '.$params['amount'].' is <strong>'.$amount.'</strong> LTC</span>';
 	
         mysql_query("INSERT INTO `mod_gw_litecoin_info` SET invoice_id = '{$params['invoiceid']}', address = '" . mysql_real_escape_string($address) . "', secret = '{$secret}'");
 	return "<iframe src='{$params['systemurl']}/modules/gateways/litecoin.php?invoice={$params['invoiceid']}' style='border:none; height:120px'>Your browser does not support frames.</iframe>";
@@ -91,18 +91,31 @@ if($_GET['invoice']) {
 		<title>Litecoin Invoice Payment</title>
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 		<script type="text/javascript">
+		updatePrice = true;
 		function checkStatus() {
 			$.get("litecoin.php?checkinvoice=<?php echo $_GET['invoice']; ?>", function(data) {
 				if(data == 'paid') {
+					updatePrice = false;
 					parent.location.href = '<?php echo $gateway['systemurl']; ?>/viewinvoice.php?id=<?php echo $_GET['invoice']; ?>';
 				} else if(data == 'unpaid') {
 					setTimeout(checkStatus, 5000);
 				} else {
+					updatePrice = false;
 					$("#content").html("Transaction confirming... " + data + "/<?php echo $gateway['confirmations_required']; ?> confirmations");
 					setTimeout(checkStatus, 10000);
 				}
 			});
 		}
+		
+		function getPrice() {
+			if(updatePrice){
+				$.get("litecoin.php?checkprice=<?php echo $_GET['invoice']; ?>", function(data) {
+					$("#ltcprice").html(data);
+					setTimeout(getPrice, 50000);
+				});
+			}
+		}
+		
 		</script>
 		<style>
 		body {
@@ -120,7 +133,7 @@ if($_GET['invoice']) {
 		}
 		</style>
 	</head>
-	<body onload="checkStatus()">
+	<body onload="checkStatus(); getPrice();">
 		<p id="content"><?php echo litecoin_get_frame(); ?></p>
 	</body>
 </html>
@@ -150,7 +163,7 @@ function litecoin_get_frame($params, $amount) {
 	$amount = round($amountToPay / $ltc_ticker['ticker']['sell'], 8);
         
         # need to display how much is left to be paid
-	return 'Please send <strong>&#36;'.$amountToPay.'</strong> worth of LTC to address:<br /><strong><a href="#">'.$q['address'].'</a></strong><br />Currently, &#36;'.$amountToPay.' is <strong>'.$amount.'</strong> LTC';
+	return 'Please send <strong>&#36;'.$amountToPay.'</strong> worth of LTC to address:<br /><strong><a href="#">'.$q['address'].'</a></strong><br /><span id="ltcprice">Currently, &#36;'.$amountToPay.' is <strong>'.$amount.'</strong> LTC</span>';
 }
 
 if($_GET['checkinvoice']) {
@@ -168,6 +181,30 @@ if($_GET['checkinvoice']) {
 	} else {
 		echo 'unpaid';
 	}
+}else if($_GET['checkprice']) {
+	header('Content-type: text/plain');
+	require('./../../dbconnect.php');
+	$q = mysql_fetch_array(mysql_query("SELECT * FROM `tblinvoices` WHERE invoice_id = '" . mysql_real_escape_string($_GET['checkprice']) . "'"));
+	
+	$ltc_ticker = json_decode(file_get_contents("https://btc-e.com/api/2/ltc_usd/ticker"), true);
+	if (!$ltc_ticker) {
+		return "Litecoin exchange rate currently unavailable!";
+	}
+	$invoiceInfo = mysql_fetch_array(select_query('tblinvoices', 'total', array('id'=>$_GET['checkprice'],)));
+	$amountToPay = $invoiceInfo['total'];
+	while ($row = mysql_fetch_array(select_query('tblaccounts', array('amountin',), array('invoice_id'=>$_GET['checkprice'],)))) {
+		$amountToPay -= $row['amountin'];
+	}
+	$amount = round($amountToPay / $ltc_ticker['ticker']['sell'], 8);
+	//$amount = '123';
+	if($amountToPay == $invoiceInfo['total'])
+			echo "Currently, &#36;{$amountToPay} is <strong>{$amount}</strong> LTC.";
+	else
+			echo "You have <strong>{$amount}</strong> LTC remaining to pay.";
+
+
 }
+
+
 
 ?>

@@ -111,7 +111,7 @@ if($_GET['invoice']) {
 			if(updatePrice){
 				$.get("litecoin.php?checkprice=<?php echo $_GET['invoice']; ?>", function(data) {
 					$("#ltcprice").html(data);
-					setTimeout(getPrice, 50000);
+					setTimeout(getPrice, 5000);
 				});
 			}
 		}
